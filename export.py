@@ -3,20 +3,23 @@ import math
 import mathutils
 import json
 
-vertices_template = '"vertices": [{0}]'
-indices_template = '"indices": [{0}]'
-
 for mesh in bpy.data.meshes:
     X_ROT = mathutils.Matrix.Rotation(-math.pi/2, 4, 'X')
         
     vertices = []
+    normals = []
     for vertex in mesh.vertices:
         v = X_ROT * vertex.co
         vertices.append(v.x)
         vertices.append(v.y)
         vertices.append(v.z)
-        #vertices += "{0} {1} {2} ".format(v.x, v.y, v.z)
-    #print(vertices)
+        
+        n = X_ROT * vertex.normal
+        n.normalize()
+        
+        normals.append(n.x)
+        normals.append(n.y)
+        normals.append(n.z)
 
     indices = []
     for polygon in mesh.polygons:
@@ -33,9 +36,8 @@ for mesh in bpy.data.meshes:
             indices.append(c) 
             indices.append(b) 
             indices.append(d) 
-            indices.append(e) 
-            indices.append(b)
-            #indices += "{0} {1} {2} {3} {4} {5} ".format(a, c, b, d, e, b)
+            indices.append(a) 
+            indices.append(e)
             
         if len(polygon.vertices) == 3:
             a = polygon.vertices[0]
@@ -44,17 +46,14 @@ for mesh in bpy.data.meshes:
             
             indices.append(a) 
             indices.append(c) 
-            indices.append(b) 
+            indices.append(b)
             
-            #indices += "{0} {1} {2} ".format(a, c, b)
-            
-        #print(indices)
-        
-        
-    #vertices_output = vertices_template.format(vertices.strip())
-    #indices_output = indices_template.format(indices.strip())
+           
+    content = json.dumps({"vertices":vertices, "normals":normals, "indices":indices}, sort_keys=True, indent=4, separators=(',', ': '))
+    print(content)
     
-    #print(vertices_output)
-    #print(indices_output)
+    filename = "/Users/nk/Development/ideas/wow/data/models/plane.json"
     
-    print(json.dumps({"vertices":vertices, "indices":indices}, sort_keys=True, indent=4, separators=(',', ': ')))
+    out = open(filename, "w", encoding="utf-8")
+    out.write(content)
+    out.close() 
