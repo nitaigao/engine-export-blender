@@ -27,17 +27,14 @@ for mesh in bpy.data.meshes:
             a = polygon.vertices[0]
             b = polygon.vertices[1]
             c = polygon.vertices[2]                                    
-            
-            d = polygon.vertices[2]
-            e = polygon.vertices[3]
-            f = polygon.vertices[0]                                    
+            d = polygon.vertices[3]
             
             indices.append(a) 
             indices.append(c) 
-            indices.append(b) 
             indices.append(d) 
+            indices.append(c) 
             indices.append(a) 
-            indices.append(e)
+            indices.append(b)
             
         if len(polygon.vertices) == 3:
             a = polygon.vertices[0]
@@ -52,8 +49,9 @@ for mesh in bpy.data.meshes:
     content = json.dumps({"vertices":vertices, "normals":normals, "indices":indices}, sort_keys=True, indent=4, separators=(',', ': '))
     print(content)
     
-    filename = "/Users/nk/Development/ideas/wow/data/models/plane.json"
+    filename = "/Users/nk/Development/ideas/wow/models/cube.json"
     
     out = open(filename, "w", encoding="utf-8")
     out.write(content)
     out.close() 
+
