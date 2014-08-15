@@ -12,12 +12,22 @@ def do_export(filepath):
   for armature in bpy.data.armatures:
     bones_data = []
     for bone in armature.bones:
+      parent_index = -1;
+      if bone.parent != None:
+        bone_index = 0
+        for bone_data in armature.bones:
+          if bone_data.name == bone.parent.name:
+            parent_index = bone_index
+            break
+          bone_index = bone_index + 1
+
       translation = bone.head
       matrix = bone.matrix
       scale = matrix.to_scale()
       orientation = matrix.to_quaternion()
       bones_data.append({
         "name" : bone.name, 
+        "parent" : parent_index,
         "scale" : {"x" : scale.x, "y" : scale.y, "z" : scale.z},
         "translation" : {"x" : translation.x, "y" : translation.y, "z" : translation.z},
         "orientation" : {"x" : orientation.x, "y" : orientation.y, "z" : orientation.z, "w" : orientation.w }
