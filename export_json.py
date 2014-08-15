@@ -23,6 +23,11 @@ def do_export(filepath):
 
       translation = bone.head
       matrix = bone.matrix
+
+      if parent_index == -1:
+        X_ROT = mathutils.Matrix.Rotation(-math.pi/2, 4, 'X')
+        matrix = X_ROT.to_3x3() * bone.matrix
+      
       scale = matrix.to_scale()
       orientation = matrix.to_quaternion()
       bones_data.append({
